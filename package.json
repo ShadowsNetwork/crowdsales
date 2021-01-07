@@ -1,0 +1,25 @@
+{
+  "name": "crowdsales",
+  "version": "1.0.0",
+  "description": "shadows crowdsales contract",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShadowsNetwork/crowdsales.git"
+  },
+  "keywords": [
+    "shdadows",
+    "DOS",
+    "crowdsales",
+    "polkadot"
+  ],
+  "author": "shadows",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShadowsNetwork/crowdsales/issues"
+  },
+  "homepage": "https://github.com/ShadowsNetwork/crowdsales#readme"
+}

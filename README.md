@@ -1,2 +1,2 @@
 # crowdsales
-crowdsales contracts
+crowdsales contract
