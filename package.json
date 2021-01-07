@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/ShadowsNetwork/crowdsales/issues"
   },
-  "homepage": "https://github.com/ShadowsNetwork/crowdsales#readme"
+  "homepage": "https://github.com/ShadowsNetwork/crowdsales#readme",
+  "devDependencies": {
+    "truffle": "^5.1.60",
+    "@openzeppelin/contracts": "2.5.0"
+  },
+  "dependencies": {}
 }
