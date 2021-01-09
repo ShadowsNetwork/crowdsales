@@ -12,7 +12,8 @@ module.exports = async function (deployer, network, accounts) {
   await deployer.deploy(DOSToken, '100000000000000000000000000')
   const dos = await DOSToken.deployed()
 
-  await deployer.deploy(DOSCrowdsale, 1, account1, dos.address, account0)
+  //1 eth = 1000 DOS
+  await deployer.deploy(DOSCrowdsale, 1000, account1, dos.address, account0)
   const sale = await DOSCrowdsale.deployed()
 
   await dos.approve(sale.address, '100000000000000000000000000')
