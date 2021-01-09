@@ -3,7 +3,7 @@ pragma solidity ^0.5.5;
 import "@openzeppelin/contracts/crowdsale/Crowdsale.sol";
 import "@openzeppelin/contracts/crowdsale/emission/AllowanceCrowdsale.sol";
 
-contract ShadowsCrowdsale is Crowdsale, AllowanceCrowdsale {
+contract DOSCrowdsale is Crowdsale, AllowanceCrowdsale {
     constructor(
         uint256 rate,
         address payable wallet,
@@ -13,7 +13,5 @@ contract ShadowsCrowdsale is Crowdsale, AllowanceCrowdsale {
         AllowanceCrowdsale(tokenWallet)
         Crowdsale(rate, wallet, token)
         public
-    {
-
-    }
+    {}
 }
