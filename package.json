@@ -23,8 +23,9 @@
   },
   "homepage": "https://github.com/ShadowsNetwork/crowdsales#readme",
   "devDependencies": {
+    "@openzeppelin/contracts": "2.5.0",
     "truffle": "^5.1.60",
-    "@openzeppelin/contracts": "2.5.0"
+    "shadows-truffle-plugin-verify": "^0.0.1"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
