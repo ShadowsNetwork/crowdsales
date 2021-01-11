@@ -3,8 +3,9 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./Ownable.sol";
+import "./interfaces/IVestingVault.sol"
 
-contract VestingVault is Ownable {
+contract VestingVault is IVestingVault, Ownable {
     using SafeMath for uint256;
     using SafeMath for uint16;
 
@@ -27,10 +28,19 @@ contract VestingVault is Ownable {
 
     uint256 public totalVestingCount;
 
-    constructor(ERC20 _token) public {
+    bool public isClaimBegin = false;
+
+    bool public claimBeginTime;
+
+    constructor() public {}
+
+   function setToken(address _token) public view returns(bool) {
         require(address(_token) != address(0));
         token = _token;
-    }
+        isClaimBegin = true;
+        claimBeginTime = currentTime();
+        return true;
+    } 
     
     function addTokenGrant(
         address _recipient,
@@ -65,6 +75,7 @@ contract VestingVault is Ownable {
 
     /// @notice Allows a grant recipient to claim their vested tokens. Errors if no tokens have vested
     function claimVestedTokens() external {
+        require(isClaimBegin, "claim has not yet started");
         uint16 daysVested;
         uint256 amountVested;
         (daysVested, amountVested) = calculateGrantClaim(msg.sender);
@@ -119,7 +130,7 @@ contract VestingVault is Ownable {
     /// @notice Calculate the vested and unclaimed months and tokens available for `_grantId` to claim
     /// Due to rounding errors once grant duration is reached, returns the entire left grant amount
     /// Returns (0, 0) if cliff has not been reached
-    function calculateGrantClaim(address _recipient) private view returns (uint16, uint256) {
+    function getGrantAmount(address _recipient) public view returns(uint256)  {
         Grant storage tokenGrant = tokenGrants[_recipient];
 
         require(tokenGrant.totalClaimed < tokenGrant.amount, "Grant fully claimed");
