@@ -1,4 +1,6 @@
-pragma solidity ^0.5.16;
+// SPDX-License-Identifier: MI
+
+pragma solidity >=0.6.0 <0.8.0;
 
 interface IVestingVault {
     function addTokenGrant(
@@ -6,15 +8,9 @@ interface IVestingVault {
         uint256 _amount,
         uint16 _vestingDurationInDays,
         uint16 _vestingCliffInDays    
-    ); 
+    ) external; 
 
     function claimVestedTokens() external;
 
     function revokeTokenGrant(address _recipient) external;
-
-    function getGrantStartTime(address _recipient) public view returns(uint256);
-
-    function getGrantAmount(address _recipient) public view returns(uint256);
-
-    function getGrantAmount(address _recipient) public view returns(uint256);
 }
