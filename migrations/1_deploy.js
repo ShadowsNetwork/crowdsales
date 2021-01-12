@@ -1,5 +1,5 @@
-const DOSToken = artifacts.require("DOSToken")
-const DOSCrowdsale = artifacts.require("DOSCrowdsale")
+const VestingVault = artifacts.require("VestingVault")
+const Crowdsale = artifacts.require("Crowdsale")
 
 module.exports = async function (deployer, network, accounts) {
   var account0 = accounts[0]
@@ -9,12 +9,9 @@ module.exports = async function (deployer, network, accounts) {
     account1 = '0xF3B35249Fd03Df13D3c9Be1c3Fc74D7C333d87a0' //bd-wallet-core
   }
 
-  await deployer.deploy(DOSToken, '100000000000000000000000000')
-  const dos = await DOSToken.deployed()
+  await deployer.deploy(VestingVault)
+  const vestingVault = await VestingVault.deployed()
 
-  //1 eth = 1000 DOS
-  await deployer.deploy(DOSCrowdsale, 1000, account1, dos.address, account0)
-  const sale = await DOSCrowdsale.deployed()
-
-  await dos.approve(sale.address, '100000000000000000000000000')
+  await deployer.deploy(Crowdsale, 1000, account1, vestingVault.address)
+  await Crowdsale.deployed()
 }

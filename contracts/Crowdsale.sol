@@ -21,7 +21,7 @@ import "./interfaces/IVestingVault.sol";
  * the methods to add functionality. Consider using 'super' where appropriate to concatenate
  * behavior.
  */
-contract DOSCrowdsale is Context, ReentrancyGuard {
+contract Crowdsale is Context, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -91,28 +91,28 @@ contract DOSCrowdsale is Context, ReentrancyGuard {
     /**
      * @return the token being sold.
      */
-    function vestingVault() public view returns (IVestingVault) {
-        return _vestingVault;
+    function getVestingVault() public view returns (address) {
+        return address(_vestingVault);
     }
 
     /**
      * @return the address where funds are collected.
      */
-    function wallet() public view returns (address payable) {
+    function getWallet() public view returns (address payable) {
         return _wallet;
     }
 
     /**
      * @return the number of token units a buyer gets per wei.
      */
-    function rate() public view returns (uint256) {
+    function getRate() public view returns (uint256) {
         return _rate;
     }
 
     /**
      * @return the amount of wei raised.
      */
-    function weiRaised() public view returns (uint256) {
+    function getWeiRaised() public view returns (uint256) {
         return _weiRaised;
     }
 
