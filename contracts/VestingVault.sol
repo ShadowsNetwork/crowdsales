@@ -37,6 +37,8 @@ contract VestingVault is IVestingVault, Ownable {
 
     uint256 public claimBeginTime = 0;
 
+    uint16 public vestingDurationInDays = 10;
+
     address public tokenWallet;
 
     address public associateContract;
@@ -80,21 +82,14 @@ contract VestingVault is IVestingVault, Ownable {
 
     function addTokenGrant(
         address _recipient,
-        uint256 _amount,
-        uint16 _vestingDurationInDays,
-        uint16 _vestingCliffInDays
+        uint256 _amount
     ) external override onlyOwnerOrAssociateContract {
         require(
             tokenGrants[_recipient].amount == 0,
             "Grant already exists, must revoke first."
         );
-        require(_vestingCliffInDays <= 10 * 365, "Cliff greater than 10 years");
-        require(
-            _vestingDurationInDays <= 25 * 365,
-            "Duration greater than 25 years"
-        );
 
-        uint256 amountVestedPerDay = _amount.div(_vestingDurationInDays);
+        uint256 amountVestedPerDay = _amount.div(vestingDurationInDays);
         require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
 
         // Transfer the grant tokens under the control of the vesting contract
@@ -103,7 +98,7 @@ contract VestingVault is IVestingVault, Ownable {
         Grant memory grant =
             Grant({
                 amount: _amount,
-                vestingDuration: _vestingDurationInDays,
+                vestingDuration: vestingDurationInDays,
                 daysClaimed: 0,
                 totalClaimed: 0,
                 recipient: _recipient

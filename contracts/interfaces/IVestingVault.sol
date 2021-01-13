@@ -5,9 +5,7 @@ pragma solidity >=0.6.0 <0.8.0;
 interface IVestingVault {
     function addTokenGrant(
         address _recipient,
-        uint256 _amount,
-        uint16 _vestingDurationInDays,
-        uint16 _vestingCliffInDays    
+        uint256 _amount
     ) external; 
 
     function claimVestedTokens() external;

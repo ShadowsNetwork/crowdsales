@@ -184,7 +184,7 @@ contract Crowdsale is Context, ReentrancyGuard {
     function _deliverVestingVault(address beneficiary, uint256 tokenAmount)
         internal
     {
-        _vestingVault.addTokenGrant(beneficiary, tokenAmount, 30, 0);
+        _vestingVault.addTokenGrant(beneficiary, tokenAmount);
     }
 
     /**
