@@ -14,7 +14,6 @@ contract VestingVault is IVestingVault, Ownable {
     using SafeERC20 for IERC20;
 
     struct Grant {
-        uint256 startTime;
         uint256 amount;
         uint16 vestingDuration;
         uint16 daysClaimed;
@@ -36,9 +35,7 @@ contract VestingVault is IVestingVault, Ownable {
 
     uint256 public totalVestingCount;
 
-    bool public isClaimBegin = false;
-
-    uint256 public claimBeginTime;
+    uint256 public claimBeginTime = 0;
 
     address public tokenWallet;
 
@@ -49,8 +46,12 @@ contract VestingVault is IVestingVault, Ownable {
     function setToken(address _token) public onlyOwner returns (bool) {
         require(address(_token) != address(0));
         token = IERC20(_token);
-        isClaimBegin = true;
-        claimBeginTime = currentTime();
+        return true;
+    }
+
+    function setClaimBeginTime(uint256 _claimBeginTime) public onlyOwner returns (bool) {
+        require(_claimBeginTime != 0);
+        claimBeginTime = _claimBeginTime;
         return true;
     }
 
@@ -69,7 +70,7 @@ contract VestingVault is IVestingVault, Ownable {
         onlyOwner
         returns (bool)
     {
-       require(
+        require(
             _associateContract != address(0),
             "associateContract is the zero address"
         );
@@ -97,11 +98,10 @@ contract VestingVault is IVestingVault, Ownable {
         require(amountVestedPerDay > 0, "amountVestedPerDay > 0");
 
         // Transfer the grant tokens under the control of the vesting contract
-        require(token.transferFrom(owner(), address(this), _amount));
+        // require(token.transferFrom(owner(), address(this), _amount));
 
         Grant memory grant =
             Grant({
-                startTime: currentTime() + _vestingCliffInDays * 1 days,
                 amount: _amount,
                 vestingDuration: _vestingDurationInDays,
                 daysClaimed: 0,
@@ -114,7 +114,10 @@ contract VestingVault is IVestingVault, Ownable {
 
     /// @notice Allows a grant recipient to claim their vested tokens. Errors if no tokens have vested
     function claimVestedTokens() external override {
-        require(isClaimBegin, "claim has not yet started");
+        require(
+            claimBeginTime > 0 && currentTime() >= claimBeginTime,
+            "claim has not yet started"
+        );
         uint16 daysVested;
         uint256 amountVested;
         (daysVested, amountVested) = calculateGrantClaim(msg.sender);
@@ -146,7 +149,6 @@ contract VestingVault is IVestingVault, Ownable {
         require(token.transfer(owner(), amountNotVested));
         require(token.transfer(_recipient, amountVested));
 
-        tokenGrant.startTime = 0;
         tokenGrant.amount = 0;
         tokenGrant.vestingDuration = 0;
         tokenGrant.daysClaimed = 0;
@@ -156,14 +158,6 @@ contract VestingVault is IVestingVault, Ownable {
         emit GrantRevoked(_recipient, amountVested, amountNotVested);
     }
 
-    function getGrantStartTime(address _recipient)
-        public
-        view
-        returns (uint256)
-    {
-        Grant storage tokenGrant = tokenGrants[_recipient];
-        return tokenGrant.startTime;
-    }
 
     function getGrantAmount(address _recipient) public view returns (uint256) {
         Grant storage tokenGrant = tokenGrants[_recipient];
@@ -174,7 +168,7 @@ contract VestingVault is IVestingVault, Ownable {
     /// Due to rounding errors once grant duration is reached, returns the entire left grant amount
     /// Returns (0, 0) if cliff has not been reached
     function calculateGrantClaim(address _recipient)
-        private
+        public
         view
         returns (uint16, uint256)
     {
@@ -186,13 +180,13 @@ contract VestingVault is IVestingVault, Ownable {
         );
 
         // For grants created with a future start date, that hasn't been reached, return 0, 0
-        if (currentTime() < tokenGrant.startTime) {
+        if (claimBeginTime == 0 || currentTime() < claimBeginTime) {
             return (0, 0);
         }
 
         // Check cliff was reached
         uint256 elapsedDays =
-            currentTime().sub(tokenGrant.startTime - 1 days).div(1 days);
+            currentTime().sub(claimBeginTime - 1 days).div(1 days);
 
         // If over vesting duration, all tokens vested
         if (elapsedDays >= tokenGrant.vestingDuration) {
