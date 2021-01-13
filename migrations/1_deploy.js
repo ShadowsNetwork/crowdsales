@@ -1,5 +1,6 @@
 const VestingVault = artifacts.require("VestingVault")
 const Crowdsale = artifacts.require("Crowdsale")
+const DOSToken = artifacts.require("DOSToken")
 
 module.exports = async function (deployer, network, accounts) {
   var account0 = accounts[0]
@@ -14,4 +15,6 @@ module.exports = async function (deployer, network, accounts) {
 
   await deployer.deploy(Crowdsale, 1000, account1, vestingVault.address)
   await Crowdsale.deployed()
+
+  await deployer.deploy(DOSToken,"100000000000000000000000000")
 }
